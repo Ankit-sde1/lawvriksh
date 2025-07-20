@@ -17,34 +17,20 @@ Deployment: Vercel
 ⚙️ Setup & Run Instructions
 Clone the repository:
 
-bash
-Copy
-Edit
 git clone https://github.com/your-username/lawvriksh.git
 cd lawvriksh
 Install dependencies:
 
-bash
-Copy
-Edit
+
 npm install
 Run the development server:
 
-bash
-Copy
-Edit
 npm run dev
 Build for production:
 
-bash
-Copy
-Edit
 npm run build
 Preview production build:
 
-bash
-Copy
-Edit
 npm run preview
 🧠 State Management Approach
 We used React hooks (useState, useEffect) for lightweight and efficient state management.
@@ -52,15 +38,10 @@ We used React hooks (useState, useEffect) for lightweight and efficient state ma
 🔧 State Structure
 Global Entry State:
 
-js
-Copy
-Edit
+
 const [entries, setEntries] = useState([]);
 Stored as an array of objects:
 
-js
-Copy
-Edit
 [
   {
     id: uuid(),
@@ -77,30 +58,25 @@ On initial load, we hydrate entries from localStorage.
 Every state update persists to localStorage for persistence across sessions.
 
 🧩 Component Structure
-less
-Copy
-Edit
 src/
 │
 ├── components/
-│   ├── EntryForm.jsx        // Form to create a new diary entry
-│   ├── EntryList.jsx        // Renders the sorted list of entries
-│   ├── EntryCard.jsx        // Individual card view with animation
-│   └── Header.jsx           // App branding and navigation
+│   ├── EntryForm.jsx                                      // Form to create a new diary entry
+│   ├── EntryList.jsx                                      // Renders the sorted list of entries
+│   ├── EntryCard.jsx                                      // Individual card view with animation
+│   └── Header.jsx                                         // App branding and navigation
 │
 ├── utils/
-│   └── storage.js           // Local storage helpers
+│   └── storage.js                                       // Local storage helpers
 │
-├── App.jsx                  // Root component with state logic
-└── main.jsx                 // Entry point
+├── App.jsx                                              // Root component with state logic
+└── main.jsx                                             // Entry point
 🧩 Insertion Logic (Chronological Ordering)
 Every new entry is pushed to the entries array.
 
 The list is immediately sorted in ascending chronological order by date:
 
-js
-Copy
-Edit
+
 const sortedEntries = [...entries].sort((a, b) => new Date(a.date) - new Date(b.date));
 This ensures new entries are always placed appropriately in the timeline, not just at the end.
 
@@ -109,9 +85,7 @@ We use Framer Motion to animate entry cards during:
 
 Mounting (fade/slide-in):
 
-jsx
-Copy
-Edit
+
 <motion.div
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
