@@ -71,6 +71,7 @@ src/
 │
 ├── App.jsx                                              // Root component with state logic
 └── main.jsx                                             // Entry point
+
 🧩 Insertion Logic (Chronological Ordering)
 Every new entry is pushed to the entries array.
 
