@@ -1,4 +1,4 @@
-import React from "react";
+ import React from "react";
 
 const RecentActivities = ({ activities }) => (
   <div className="bg-white rounded-2xl p-6 shadow-md">

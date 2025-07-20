@@ -1,4 +1,4 @@
-import React from "react";
+ import React from "react";
 
 const Contact = React.forwardRef((props, ref) => (
   <section ref={ref} className="bg-white rounded-2xl p-6 shadow-md mt-12" id="contact-section">

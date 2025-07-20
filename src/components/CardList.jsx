@@ -1,7 +1,8 @@
+ // components/CardList.jsx
 import React, { useState, useRef } from "react";
 import Card from "./Card";
 
-const CardList = ({ category, cards, onAddCard }) => {
+const CardList = ({ category, cards, onAddCard, selectionMode, selectedCardId, onSelectCard }) => {
   const [showModal, setShowModal] = useState(false);
   const [newImage, setNewImage] = useState("");
   const [desc, setDesc] = useState("");
@@ -35,15 +36,25 @@ const CardList = ({ category, cards, onAddCard }) => {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-lg">{category}</h3>
-        <button 
+        <button
           className="text-xs px-3 py-1 bg-yellow-100 rounded hover:bg-yellow-200"
           onClick={() => setShowModal(true)}
+          disabled={selectionMode}
         >
           Add new card
         </button>
       </div>
       <div className="flex flex-wrap gap-6">
-        {cards.map(card => (<Card key={card.id} image={card.image} title={card.title} />))}
+        {cards.map(card => (
+          <Card
+            key={card.id}
+            image={card.image}
+            title={card.title}
+            isSelectable={selectionMode}
+            isSelected={selectedCardId === card.id}
+            onSelect={() => selectionMode ? onSelectCard(card.id) : undefined}
+          />
+        ))}
       </div>
       {showModal && (
         <form

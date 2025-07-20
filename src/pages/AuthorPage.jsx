@@ -1,3 +1,4 @@
+ // pages/AuthorPage.jsx
 import React, { useRef, useState, useEffect } from "react";
 import Profile from "../components/Profile";
 import CardList from "../components/CardList";
@@ -20,7 +21,6 @@ const initialActivities = [
   { id: 2, date: "18 Jul 2024", description: "Added a new recent activity" },
 ];
 
-// Safe localStorage parsing
 function parseLocalStorageArray(key, fallback) {
   try {
     const val = localStorage.getItem(key);
@@ -30,7 +30,6 @@ function parseLocalStorageArray(key, fallback) {
   }
 }
 
-// Sort activities by date (descending)
 function insertChronological(arr) {
   return [...arr].sort((a, b) => new Date(b.date) - new Date(a.date));
 }
@@ -40,7 +39,9 @@ export default function AuthorPage() {
   const [activities, setActivities] = useState([]);
   const [profilePic, setProfilePic] = useState("profilepic");
   const [showActivityModal, setShowActivityModal] = useState(false);
-
+  const [activeTab, setActiveTab] = useState(""); // "" = Home, "Recent", "Trending", "About"
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState(null);
   const contactRef = useRef(null);
 
   useEffect(() => {
@@ -49,11 +50,10 @@ export default function AuthorPage() {
     setProfilePic(localStorage.getItem("profilePic") || "profilepic");
   }, []);
 
-  // Profile picture update
   const handleProfilePicUpdate = (newPic) => {
     setProfilePic(newPic);
     localStorage.setItem("profilePic", newPic);
-    setActivities((prev) => {
+    setActivities(prev => {
       const updated = insertChronological([
         ...prev,
         {
@@ -67,7 +67,6 @@ export default function AuthorPage() {
     });
   };
 
-  // Card addition with activity
   const addCard = (card) => {
     setCards(prev => {
       const updated = [...prev, card];
@@ -88,7 +87,14 @@ export default function AuthorPage() {
     });
   };
 
-  // Manual activity via modal
+  const deleteCard = (cardId) => {
+    setCards(prev => {
+      const updated = prev.filter(card => card.id !== cardId);
+      localStorage.setItem("cards", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const handleAddActivity = (activity) => {
     setActivities(prev => {
       const updated = insertChronological([...prev, activity]);
@@ -97,6 +103,63 @@ export default function AuthorPage() {
     });
     setShowActivityModal(false);
   };
+
+  // CardList rendering logic depending on tabs
+  let cardLists = null;
+  if (activeTab === "") {
+    cardLists = (
+      <>
+        <CardList
+          category="Corporate Law"
+          cards={cards.filter(c => c.category === "Corporate Law")}
+          onAddCard={addCard}
+          selectionMode={selectionMode}
+          selectedCardId={selectedCardId}
+          onSelectCard={setSelectedCardId}
+        />
+        <CardList
+          category="Constitutional Law"
+          cards={cards.filter(c => c.category === "Constitutional Law")}
+          onAddCard={addCard}
+          selectionMode={selectionMode}
+          selectedCardId={selectedCardId}
+          onSelectCard={setSelectedCardId}
+        />
+      </>
+    );
+  } else if (activeTab === "Recent") {
+    cardLists = (
+      <CardList
+        category="Latest Added"
+        cards={cards.length ? [cards[cards.length - 1]] : []}
+        onAddCard={addCard}
+        selectionMode={selectionMode}
+        selectedCardId={selectedCardId}
+        onSelectCard={setSelectedCardId}
+      />
+    );
+  } else if (activeTab === "Trending") {
+    cardLists = (
+      <>
+        <CardList
+          category="Corporate Law"
+          cards={cards.filter(c => c.category === "Corporate Law")}
+          onAddCard={addCard}
+          selectionMode={selectionMode}
+          selectedCardId={selectedCardId}
+          onSelectCard={setSelectedCardId}
+        />
+        <CardList
+          category="Constitutional Law"
+          cards={cards.filter(c => c.category === "Constitutional Law")}
+          onAddCard={addCard}
+          selectionMode={selectionMode}
+          selectedCardId={selectedCardId}
+          onSelectCard={setSelectedCardId}
+        />
+      </>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -143,21 +206,66 @@ export default function AuthorPage() {
               An author is a creator of written works, such as books, articles, or stories, who uses words to inform, entertain, or inspire readers. They often draw from imagination.
             </p>
             <SocialLinks />
+            <div className="flex flex-row gap-4 mb-7 mt-4">
+              <button
+                className={`px-4 py-2 rounded-full font-medium ${activeTab === "" ? "bg-yellow-300" : "bg-gray-100"}`}
+                onClick={() => { setActiveTab(""); setSelectionMode(false); setSelectedCardId(null); }}
+              >Home</button>
+              <button
+                className={`px-4 py-2 rounded-full font-medium ${activeTab === "Recent" ? "bg-yellow-300" : "bg-gray-100"}`}
+                onClick={() => { setActiveTab("Recent"); setSelectionMode(false); setSelectedCardId(null); }}
+              >Recent</button>
+              <button
+                className={`px-4 py-2 rounded-full font-medium ${activeTab === "Trending" ? "bg-yellow-300" : "bg-gray-100"}`}
+                onClick={() => { setActiveTab("Trending"); setSelectionMode(false); setSelectedCardId(null); }}
+              >Trending</button>
+              <button
+                className={`px-4 py-2 rounded-full font-medium ${activeTab === "About" ? "bg-yellow-300" : "bg-gray-100"}`}
+                onClick={() => {
+                  setActiveTab("About");
+                  setSelectionMode(false);
+                  setSelectedCardId(null);
+                  contactRef.current?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >About</button>
+            </div>
+            {!selectionMode && (activeTab !== "About") && (
+              <button
+                onClick={() => { setSelectionMode(true); setSelectedCardId(null); }}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-semibold shadow mb-6"
+              >
+                Delete Card
+              </button>
+            )}
+            {selectionMode && (
+              <div className="flex gap-2 mb-6">
+                <button
+                  disabled={!selectedCardId}
+                  onClick={() => {
+                    if (selectedCardId) {
+                      deleteCard(selectedCardId);
+                      setSelectionMode(false);
+                      setSelectedCardId(null);
+                    }
+                  }}
+                  className={`bg-red-500 text-white px-4 py-2 rounded ${!selectedCardId ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
+                >
+                  Confirm Delete
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectionMode(false);
+                    setSelectedCardId(null);
+                  }}
+                  className="bg-gray-200 px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </section>
-          <section className="mb-6">
-            <CardList
-              category="Corporate Law"
-              cards={cards.filter(c => c.category === "Corporate Law")}
-              onAddCard={addCard}
-            />
-          </section>
-          <section>
-            <CardList
-              category="Constitutional Law"
-              cards={cards.filter(c => c.category === "Constitutional Law")}
-              onAddCard={addCard}
-            />
-          </section>
+          {/* Card Sections */}
+          {activeTab !== "About" && cardLists}
         </main>
         <aside className="w-full max-w-sm">
           <Profile profilePic={profilePic} setProfilePic={handleProfilePicUpdate} />

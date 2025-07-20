@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+ import React, { useRef } from "react";
 
 const Profile = ({ profilePic, setProfilePic }) => {
   const fileInput = useRef(null);
@@ -46,11 +46,11 @@ const Profile = ({ profilePic, setProfilePic }) => {
         Entrepreneur | Developer
       </div>
       <button
-  className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-semibold shadow"
-  type="button"
->
-  Follow
-</button>
+        className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-semibold shadow"
+        type="button"
+      >
+        Follow
+      </button>
     </div>
   );
 };
