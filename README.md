@@ -58,19 +58,17 @@ On initial load, we hydrate entries from localStorage.
 Every state update persists to localStorage for persistence across sessions.
 
 🧩 Component Structure
-src/
-│
-├── components/
-│   ├── EntryForm.jsx                                      // Form to create a new diary entry
-│   ├── EntryList.jsx                                      // Renders the sorted list of entries
-│   ├── EntryCard.jsx                                      // Individual card view with animation
-│   └── Header.jsx                                         // App branding and navigation
-│
-├── utils/
-│   └── storage.js                                       // Local storage helpers
-│
-├── App.jsx                                              // Root component with state logic
-└── main.jsx                                             // Entry point
+ - `src/`  
+  ├── `components/`  
+  │   ├── `EntryForm.jsx` – Form to create a new diary entry  
+  │   ├── `EntryList.jsx` – Renders the sorted list of entries  
+  │   ├── `EntryCard.jsx` – Individual card view with animation  
+  │   └── `Header.jsx` – App branding and navigation  
+  ├── `utils/`  
+  │   └── `storage.js` – Local storage helpers  
+  ├── `App.jsx` – Root component with state logic  
+  └── `main.jsx` – Entry point
+
 
 🧩 Insertion Logic (Chronological Ordering)
 Every new entry is pushed to the entries array.
